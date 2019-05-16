@@ -1,5 +1,6 @@
 [vqfx10k]
-vqfx1 ansible_port=2222 ansible_host=192.168.0.18
-vqfx2 ansible_port=2200 ansible_host=192.168.0.18 
+vqfx1 ansible_port=2222 ansible_host=192.168.0.18 ansible_user=root ansible_ssh_pass=Juniper
+vqfx2 ansible_port=2200 ansible_host=192.168.0.18 ansible_user=root ansible_ssh_pass=Juniper
+ 
 #vqfx2 ansible_port=2200 ansible_host=192.168.0.18 ansible_connection=ssh ansible_user=root ansible_ssh_pass=Juniper
 

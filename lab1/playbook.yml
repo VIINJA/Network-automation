@@ -12,8 +12,8 @@
         config_format: "xml"
         host: "{{ ansible_ssh_host }}"
         port: "{{ ansible_ssh_port }}"
-        user: root
-        passwd: Juniper
+        user: "{{ ansible_user }}"
+        passwd: "{{ ansible_ssh_pass }}"
       register: result
 
     - name: Print configuration
