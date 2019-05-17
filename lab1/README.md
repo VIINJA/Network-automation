@@ -1,1 +1,1 @@
-For very simple environmet, which only contains 2 unconfigured Junos devices. We get information from those 2 devices.
+For very simple environmet, which only contains 2 unconfigured Junos devices. We get information from those 2 devices with getfacts.yml.  Now we can deploy some configure with configure.yml (Vagrant had these defaults, but I'm runnign vagrant on windows, so had to make other VM for ansible. 
