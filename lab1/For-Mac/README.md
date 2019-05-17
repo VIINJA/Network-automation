@@ -11,5 +11,5 @@
     =============               =============
 
 # Mac problems
-For some reason, I can't play same file from MAC, than linux... which would getfacts from devices... need to more researching..
+For some reason, I can't play same file from MAC, than linux... which would getfacts from devices... need more researching..
 ```
