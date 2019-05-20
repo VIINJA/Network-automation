@@ -1,1 +1,2 @@
-For very simple environmet, which only contains 2 unconfigured Junos devices. We get information from those 2 devices with getfacts.yml.  Now we can deploy some configure with configure.yml (Vagrant had these defaults, but I'm runnign vagrant on windows, so had to make other VM for ansible. 
+For very simple environment, which only contains 2 unconfigured Junos devices. We get information from those 2 devices with getfacts.yml.  Now we can deploy some configure with configure.yml (Vagrant had these defaults, but I'm runnign vagrant on windows, so had to make other VM for ansible.
+Raw modules can run "cat .history" etc... commands, but cant use commands like "show version", because need to give "cli" command first.

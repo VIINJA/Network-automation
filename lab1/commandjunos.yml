@@ -1,0 +1,33 @@
+- name: Get device facts and configuration
+  hosts: vqfx10k
+  roles:
+    - Juniper.junos
+  vars:
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Execute single "show version" command.
+      juniper_junos_command:
+        host: "{{ ansible_ssh_host }}"
+        port: "{{ ansible_ssh_port }}"
+        user: "{{ ansible_user }}"
+        passwd: "{{ ansible_ssh_pass }}"
+        commands: "show version"
+      register: response
+
+    - name: Print the command output
+      debug:
+        var: response.stdout
+
+    - name: Execute three commands.
+      juniper_junos_command:
+        host: "{{ ansible_ssh_host }}"
+        port: "{{ ansible_ssh_port }}"
+        user: "{{ ansible_user }}"
+        passwd: "{{ ansible_ssh_pass }}"
+        commands:
+          - "show version"
+          - "show system uptime"
+          - "show interface terse"
+      register: response
