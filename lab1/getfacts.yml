@@ -1,22 +1,21 @@
-# This task gets all Junos configuration from all devices
-- name: Generate and Deploy Configuration
+- name: Get device facts and configuration
   hosts: vqfx10k
-  connection: local
-  gather_facts: no
   roles:
     - Juniper.junos
-  #vars:
-    #ansible_python_interpreter: "/usr/local/Cellar/ansible/2.7.10/libexec/bin/python3.7"
+  connection: local
+  gather_facts: no
+
   tasks:
-    - name: Build configuration
-      template: src=vqfx.conf.j2 dest=/tmp/{{ inventory_hostname }}.conf
-    - name: Deploy config to device ... please wait
-      juniper_junos_config:
-        load: 'override'
-        src: "/tmp/{{ inventory_hostname }}.conf"
+    - name: Retrieve device facts and configuration and save facts to file
+      juniper_junos_facts:        
+        savedir: "{{ playbook_dir }}"
+        config_format: "xml"
         host: "{{ ansible_ssh_host }}"
         port: "{{ ansible_ssh_port }}"
-        user: root
-        passwd: Juniper
-        format: text
-        logfile: /tmp/changes.log
+        user: "{{ ansible_user }}"
+        passwd: "{{ ansible_ssh_pass }}"
+      register: result
+
+    - name: Print configuration
+      debug:
+        var: result.ansible_facts.junos.config
