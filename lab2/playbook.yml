@@ -1,0 +1,72 @@
+- name: Get device facts and configuration
+  hosts: vqfx10k
+  roles:
+    - Juniper.junos
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: get uptime
+      juniper_junos_command:       
+        commands: "show system uptime"
+        format: xml
+        host: "{{ ansible_ssh_host }}"
+        port: "{{ ansible_ssh_port }}"
+        user: root
+        passwd: Juniper
+      register: result
+
+    #- name: Print configuration
+    #  debug:
+    #    var: result
+
+    #- name: testi
+    #  debug:
+    #    var: result.parsed_output['multi-routing-engine-results']['multi-routing-engine-item']['system-uptime-information']['uptime-information']['up-time']
+    
+    - name: set facts
+      set_fact:
+        uptime: "{{ result.parsed_output['multi-routing-engine-results']['multi-routing-engine-item']['system-uptime-information']['uptime-information']['up-time'] }}"
+   
+   # - name: test fact
+   #   debug:
+   #     var: hostvars[inventory_hostname] 
+      
+
+
+    - name: write uptimes on separate files
+      lineinfile:
+        path: "{{ playbook_dir }}/{{ inventory_hostname }}.txt"
+        state: present
+        regexp: "{{ inventory_hostname }}:"
+        line: "{{ inventory_hostname }}: {{result.parsed_output['multi-routing-engine-results']['multi-routing-engine-item']['system-uptime-information']['uptime-information']['up-time']}}"
+        create: yes
+
+ 
+    #- name: create uptimes.txt
+    #  file: 
+    #    path: "{{ playbook_dir }}/uptimes.txt"
+    #   state: touch
+    #  run_once: true
+
+    
+    - name: write uptimes in one file
+      blockinfile:
+        create: yes
+        marker: "" 
+        dest: "{{ playbook_dir }}/uptimes.txt" 
+        block: |
+          {% for h in groups['all'] %}
+            {{ h }} {{ hostvars[h].uptime }}
+          {% endfor %}
+      run_once: yes
+
+   # - name: write uptimes
+   #   lineinfile:
+   #     path: "{{ playbook_dir }}/uptimes.txt"
+   #     state: present
+   #     create: yes
+   #     line: "{{ item }}: {{ item.uptime }}"
+   #   loop: groups['all'] 
+   #   run_once: yes
+
