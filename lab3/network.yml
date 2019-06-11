@@ -1,0 +1,5 @@
+users:
+    viinja:
+      -  uid: 2000
+         class: super-user
+         authentication: encrypted-password "passwordhere"
