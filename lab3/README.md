@@ -1,4 +1,4 @@
-with tho juniper routers, creating multiple bgp links between devices. + adding snmp community for both devices.
+with two juniper routers, creating multiple bgp links between devices. + adding snmp community for both devices.
 
 On nodes we can set basic device settings like device name and loopback interface
 On network we have settings for all devices (setting user & authentication atm)
