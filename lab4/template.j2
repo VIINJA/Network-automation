@@ -111,6 +111,15 @@ interfaces {
 {% endif %}
 {% endfor %}
 }
+
+snmp {
+    community {{ service[inventory_hostname].snmp.community.name }} {
+        authorization read-only;
+        clients {
+            {{service[inventory_hostname].snmp.community.cliaddr}};
+        }
+    }         
+}
 protocols {
     bgp {
         log-updown;
