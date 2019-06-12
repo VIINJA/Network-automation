@@ -39,5 +39,16 @@
         line: "{{ inventory_hostname }}: {{result}}"
         create: yes
   
+    - name: read conf files for comparing
+      debug: msg="{{lookup('file','conf/{{inventory_hostname}}.conf')}}"
+      register: original
+
+    - name: write original files to same format
+      lineinfile:
+        path: "{{ playbook_dir }}/{{ inventory_hostname }}_original.txt"
+        state: present
+        regexp: "{{ inventory_hostname }}:"
+        line: "{{ inventory_hostname }}: {{original.msg}}"
+        create: yes
       
    
