@@ -1,0 +1,7 @@
+system:
+  vqfx1:
+      name: vqfx1
+      loopback: 1.1.1.1
+  vqfx2:
+      name: vqfx2
+      loopback: 1.1.1.2
