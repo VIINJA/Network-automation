@@ -3,8 +3,7 @@
   hosts: vqfx10k
   connection: local
   gather_facts: no
-  roles:
-    - Juniper.junos
+  
   tasks:
     - name: Build configuration
       include: createconfigs.yml
@@ -15,4 +14,30 @@
  
     - name: gather facts
       junos_facts: 
+        config_format: json
         gather_subset: config
+      register: result
+
+    - name: write results on separate files
+      lineinfile:
+        path: "{{ playbook_dir }}/{{ inventory_hostname }}.txt"
+        state: present
+        regexp: "{{ inventory_hostname }}:"
+        line: "{{ inventory_hostname }}: {{result.ansible_facts.ansible_net_config}}"
+        create: yes
+
+    - name: check bgp neighbors
+      junos_command: 
+        commands: show bgp neighbor
+      register: bgp
+
+    - name: write results on separate files
+      lineinfile:
+        path: "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt"
+        state: present
+        regexp: "{{ inventory_hostname }}:"
+        line: "{{ inventory_hostname }}: {{result}}"
+        create: yes
+  
+      
+   
