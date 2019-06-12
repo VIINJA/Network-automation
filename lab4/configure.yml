@@ -1,0 +1,18 @@
+# This task gets all Junos configuration from all devices
+- name: Generate and Deploy Configuration
+  hosts: vqfx10k
+  connection: local
+  gather_facts: no
+  roles:
+    - Juniper.junos
+  tasks:
+    - name: Build configuration
+      include: createconfigs.yml
+    - name: Deploy config to device
+      junos_config:
+        src: "conf/{{ inventory_hostname }}.conf"
+        
+ 
+    - name: gather facts
+      junos_facts: 
+        gather_subset: config
