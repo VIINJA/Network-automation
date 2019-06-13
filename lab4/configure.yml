@@ -14,16 +14,22 @@
  
     - name: gather facts
       junos_facts: 
-        config_format: json
+        config_format: text
         gather_subset: config
       register: result
 
+    - name: remove compare folder
+      file:
+        state: absent
+        path: compare/
+      run_once: yes
+
+
     - name: write results on separate files
       lineinfile:
-        path: "{{ playbook_dir }}/{{ inventory_hostname }}.txt"
+        path: "{{ playbook_dir }}/compare/{{ inventory_hostname }}.txt"
         state: present
-        regexp: "{{ inventory_hostname }}:"
-        line: "{{ inventory_hostname }}: {{result.ansible_facts.ansible_net_config}}"
+        line: "{{result.ansible_facts.ansible_net_config}}"
         create: yes
 
     - name: check bgp neighbors
@@ -45,10 +51,9 @@
 
     - name: write original files to same format
       lineinfile:
-        path: "{{ playbook_dir }}/{{ inventory_hostname }}_original.txt"
+        path: "{{ playbook_dir }}/compare/{{ inventory_hostname }}_original.txt"
         state: present
-        regexp: "{{ inventory_hostname }}:"
-        line: "{{ inventory_hostname }}: {{original.msg}}"
+        line: "{{original.msg}}"
         create: yes
       
    

@@ -1,5 +1,7 @@
+## Last changed: 2019-06-13 06:45:00 UTC
+version 17.4R1.16;
 system {
-    host-name vqfx1;
+    host-name vqfx2;
     root-authentication {
         encrypted-password "$1$fv3Ke4LT$10nlsy3SEJy5ainm.kPTd.";
         ssh-rsa "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key";
@@ -12,14 +14,13 @@ system {
                 ssh-rsa "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key";
             }
         }
-    
         user viinja {
             uid 2345;
             class super-user;
             authentication {
                 encrypted-password "$1$fv3Ke4LT$10nlsy3SEJy5ainm.kPTd.";
             }
-               }
+        }
     }
     services {
         ssh {
@@ -67,99 +68,96 @@ interfaces {
             }
         }
     }
-}
-protocols {
-    lldp {
-        interface all;
-    }
-}
-vlans {
-    default {
-        vlan-id 1;
-    }
-}
-
-interfaces {
     em3 {
         unit 0 {
-            family inet{
-                address 10.10.1.1/30
+            description "to vqfx1 em3";
+            family inet {
+                address 10.10.3.2/30;
+                address 10.10.1.2/30;
             }
         }
     }
     em4 {
         unit 0 {
-            family inet{
-                address 10.10.4.1/30
+            description "to vqfx1 em4";
+            family inet {
+                address 10.10.4.2/30;
             }
         }
     }
     em5 {
         unit 0 {
-            family inet{
-                address 10.10.5.1/30
+            description "to vqfx1 em5";
+            family inet {
+                address 10.10.5.2/30;
             }
         }
     }
     em6 {
         unit 0 {
-            family inet{
-                address 10.10.6.1/30
+            description "to vqfx1 em6";
+            family inet {
+                address 10.10.6.2/30;
             }
         }
     }
     em7 {
         unit 0 {
-            family inet{
-                address 10.10.7.1/30
+            description "to vqfx1 em7";
+            family inet {
+                address 10.10.7.2/30;
             }
         }
     }
 }
-
 snmp {
-    community test {
+    community test2 {
         authorization read-only;
         clients {
             192.168.0.0/24;
         }
-    }         
+    }
+}
+routing-options {
+    router-id 1.1.1.2;
+    forwarding-table {
+        export PFE-LB;
+    }
 }
 protocols {
     bgp {
         log-updown;
         group underlay {
-            import bgp-clos-in;
-            export bgp-clos-out;
             type external;
             mtu-discovery;
-            local-as 60001;
+            import bgp-clos-in;
+            export bgp-clos-out;
+            local-as 60002;
             multipath multiple-as;
-            neighbor 10.10.1.2 {
-                peer-as 60002;
+            neighbor 10.10.3.1 {
+                peer-as 60001;
             }
-            neighbor 10.10.4.2 {
-                peer-as 60002;
+            neighbor 10.10.4.1 {
+                peer-as 60001;
             }
-            neighbor 10.10.5.2 {
-                peer-as 60002;
+            neighbor 10.10.5.1 {
+                peer-as 60001;
             }
-            neighbor 10.10.6.2 {
-                peer-as 60002;
+            neighbor 10.10.6.1 {
+                peer-as 60001;
             }
-            neighbor 10.10.7.2 {
-                peer-as 60002;
+            neighbor 10.10.7.1 {
+                peer-as 60001;
+            }
+            neighbor 10.10.1.1 {
+                peer-as 60001;
             }
         }
     }
-}
-routing-options {
-    router-id 1.1.1.1;
-    forwarding-table {
-        export PFE-LB;
+    lldp {
+        interface all;
     }
 }
-
 policy-options {
     policy-statement PFE-LB {
         then {
@@ -181,7 +179,7 @@ policy-options {
         term loopback {
             from {
                 protocol direct;
-                route-filter 1.1.1.1/32 orlonger;
+                route-filter 1.1.1.2/32 orlonger;
             }
             then {
                 next-hop self;
@@ -198,5 +196,10 @@ policy-options {
                 accept;
             }
         }
+    }
+}
+vlans {
+    default {
+        vlan-id 1;
     }
 }

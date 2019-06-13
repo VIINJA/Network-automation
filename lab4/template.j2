@@ -1,6 +1,4 @@
 system {
- 
-
     host-name {{system[inventory_hostname].name}};
     root-authentication {
         encrypted-password "$1$fv3Ke4LT$10nlsy3SEJy5ainm.kPTd.";
@@ -20,13 +18,9 @@ system {
             uid {{ user.uid }};
             class {{ user.class }};
             authentication {
-                {{ user.authentication }}
+                {{ user.authentication }};
             }
-            
        {% endfor %}
-
-
-      
         }
     }
     services {
