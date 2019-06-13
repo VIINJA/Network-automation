@@ -34,15 +34,16 @@
 
     - name: check bgp neighbors
       junos_command: 
-        commands: show bgp neighbor
+        commands: show bgp summary | display json
       register: bgp
+#    - name: debug that
+#      debug: msg="{{bgp.stdout}}"
 
     - name: write results on separate files
       lineinfile:
         path: "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt"
         state: present
-        regexp: "{{ inventory_hostname }}:"
-        line: "{{ inventory_hostname }}: {{result}}"
+        line: "{{bgp.stdout}}"
         create: yes
   
     - name: read conf files for comparing
@@ -56,14 +57,3 @@
         line: "{{original.msg}}"
         create: yes
       
-    - name: remove few extra lines from configs, so we can compare
-      lineinfile:
-        path: "{{ playbook_dir }}/compare/{{ inventory_hostname }}.txt"
-        state: absent
-        regexp: "{{ item }}"
-      loop:
-         - '## Last changed'
-         - 'version'
-      
-         
-      tags: compare
