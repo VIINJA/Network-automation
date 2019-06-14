@@ -7,10 +7,12 @@
   tasks:
     - name: Build configuration
       include: createconfigs.yml
+      delegate_to: localhost
     - name: Deploy config to device
       junos_config:
         update: override
         src: "conf/{{ inventory_hostname }}.conf"
+      
         
  
     - name: gather facts
@@ -19,19 +21,9 @@
         gather_subset: config
       register: result
 
-    - name: remove compare folder
-      file:
-        state: absent
-        path: compare/
-      run_once: yes
+    
 
 
-    - name: write results on separate files
-      lineinfile:
-        path: "{{ playbook_dir }}/compare/{{ inventory_hostname }}.txt"
-        state: present
-        line: "{{result.ansible_facts.ansible_net_config}}"
-        create: yes
 
     - name: check bgp neighbors
       junos_command: 
@@ -41,6 +33,12 @@
 #    - name: debug that
 #      debug: msg="{{bgp.stdout}}"
 
+
+#    - name: remove old files
+#      state: absent
+ #     file: "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt"
+      
+
     - name: write results on separate files
       lineinfile:
         path: "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt"
@@ -48,14 +46,33 @@
         line: "{{bgp['stdout_lines']}}"
         create: yes
       tags: 'testi'
-    - name: read conf files for comparing
-      debug: msg="{{lookup('file','conf/{{inventory_hostname}}.conf')}}"
-      register: original
 
-    - name: write original files to same format
+
+    - name: write bgp neigbor info
+      shell: cat "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt" | sed "s/'/\"/g" | jq '.[]|.["bgp-information"]|.[]|.["bgp-peer"]|.[]|.["peer-address"]|.[]|.data'
+      register: infobgp
+      tags: compare
+#    - name: debug that
+#      debug: msg="{{infobgp.stdout_lines}}"
+#      tags: compare
+
+    - name: write results on separate files
       lineinfile:
-        path: "{{ playbook_dir }}/compare/{{ inventory_hostname }}_original.txt"
+        path: "{{ playbook_dir }}/{{ inventory_hostname }}_info.txt"
         state: present
-        line: "{{original.msg}}"
+        line: "{{infobgp['stdout_lines']}}"
         create: yes
+      tags: 'compare'
+
+
+#    - name: read conf files for comparing
+#      debug: msg="{{lookup('file','conf/{{inventory_hostname}}.conf')}}"
+#      register: original
+
+#    - name: write original files to same format
+#      lineinfile:
+#        path: "{{ playbook_dir }}/compare/{{ inventory_hostname }}_original.txt"
+#        state: present
+#        line: "{{original.msg}}"
+#        create: yes
       
