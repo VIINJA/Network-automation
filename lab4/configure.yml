@@ -9,6 +9,7 @@
       include: createconfigs.yml
     - name: Deploy config to device
       junos_config:
+        update: override
         src: "conf/{{ inventory_hostname }}.conf"
         
  
@@ -36,6 +37,7 @@
       junos_command: 
         commands: show bgp summary | display json
       register: bgp
+      tags: 'testi'
 #    - name: debug that
 #      debug: msg="{{bgp.stdout}}"
 
@@ -43,9 +45,9 @@
       lineinfile:
         path: "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt"
         state: present
-        line: "{{bgp.stdout}}"
+        line: "{{bgp['stdout_lines']}}"
         create: yes
-  
+      tags: 'testi'
     - name: read conf files for comparing
       debug: msg="{{lookup('file','conf/{{inventory_hostname}}.conf')}}"
       register: original
