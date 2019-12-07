@@ -1,13 +1,14 @@
 - name: check bgp neighbors
   junos_command:
-    commands: show bgp summary
-    display: json
+    commands: show bgp summary | display json
   register: bgp
+
+
 
 - name: write results on separate files
   copy:
     dest: "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt"
-    content: "{{bgp['stdout_lines'] | to_nice_json}}"
+    content: "{{bgp['stdout_lines'] }}"
 
 - name: write bgp neigbor info
   shell: cat "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt" | sed "s/'/\"/g" | jq '.[]|.["bgp-information"]|.[]|.["bgp-peer"]|.[]|.["peer-address"]|.[]|.data'
@@ -17,8 +18,10 @@
 - name: write results on separate files
   copy:
     dest: "{{ playbook_dir }}/{{ inventory_hostname }}_info.txt"
-    content: "{{infobgp['stdout_lines']}}"
-     
+    content: "{% for item in infobgp['stdout_lines'] %} {{item}} {% if not loop.last %}, {% endif %} {% endfor %} "
+
+
+#"{{infobgp['stdout_lines'] | to}}"
 
 
 

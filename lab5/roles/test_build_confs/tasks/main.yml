@@ -1,0 +1,9 @@
+
+- name: Check that template.j2 exists
+  stat:
+    path: template.j2
+  register: stat_result
+
+- name: alert if it doesnt
+  debug: msg="template doesn't exist"
+  when: stat_result.stat.exists == False 
