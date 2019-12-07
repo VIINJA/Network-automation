@@ -1,14 +1,31 @@
+
+
+
+
+
 - name: tests
   hosts: vqfx10k
   connection: local
   gather_facts: no
-
   roles:
     - test_build_confs
     - build_confs
     - deploy_confs
   tags: never, test
   
+
+
+- name: fabric test
+  hosts: vqfx10k
+  connection: local
+  gather_facts: no
+  roles:
+    - test_fabrics
+  tags: never, fabric
+
+
+
+
 - name: real thing
   hosts: vqfx10k
   connection: local
