@@ -1,4 +1,4 @@
 - name: Deploy config to device
   junos_config:
     update: override
-    src: "conf/{{ inventory_hostname }}.conf"
+    src: "{{ playbook_dir }}/{{ inventory_hostname }}.conf"

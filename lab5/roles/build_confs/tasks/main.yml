@@ -8,10 +8,9 @@
 
 - name: Build configuration
   template: src=template.j2 dest={{ inventory_hostname }}.conf
-
-
+  when: template_exists is undefined
 - name: Build configuration
   template: src=template.j2 dest={{ inventory_hostname }}_test.conf
-  when: template_exists == true
-  tags: never, test
+  when: template_exists is defined
+  
 
