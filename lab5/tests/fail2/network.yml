@@ -1,0 +1,5 @@
+users:
+    viinja:
+         uid: 2345
+         class: super-user
+         authentication: encrypted-password "$1$fv3Ke4LT$10nlsy3SEJy5ainm.kPTd."

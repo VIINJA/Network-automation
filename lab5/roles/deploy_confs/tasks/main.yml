@@ -4,12 +4,14 @@
     src: "{{ playbook_dir }}/{{ inventory_hostname }}.conf"
   when: template_exists is undefined
 
-- name: test config
-  junos_config:
-    update: override
-    src: "{{ playbook_dir }}/{{ inventory_hostname }}_test.conf"
-    check_commit: yes
-  when: template_exists is defined
+# Need to find a way to add configs to device without commit
+
+#- name: test config
+#  junos_config:
+#    update: override
+#    src: "{{ playbook_dir }}/{{ inventory_hostname }}_test.conf"
+#    check_commit: yes
+#  when: template_exists is defined
 
 #- name: Check correctness of commit configuration
 #  junos_config:
