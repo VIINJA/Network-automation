@@ -1,0 +1,78 @@
+# This task gets all Junos configuration from all devices
+- name: Generate and Deploy Configuration
+  hosts: vqfx10k
+  connection: local
+  gather_facts: no
+  
+  tasks:
+    - name: Build configuration
+      include: createconfigs.yml
+      delegate_to: localhost
+    - name: Deploy config to device
+      junos_config:
+        update: override
+        src: "conf/{{ inventory_hostname }}.conf"
+      
+        
+ 
+    - name: gather facts
+      junos_facts: 
+        config_format: text
+        gather_subset: config
+      register: result
+
+    
+
+
+
+    - name: check bgp neighbors
+      junos_command: 
+        commands: show bgp summary | display json
+      register: bgp
+      tags: 'testi'
+#    - name: debug that
+#      debug: msg="{{bgp.stdout}}"
+
+
+#    - name: remove old files
+#      state: absent
+ #     file: "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt"
+      
+
+    - name: write results on separate files
+      lineinfile:
+        path: "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt"
+        state: present
+        line: "{{bgp['stdout_lines']}}"
+        create: yes
+      tags: 'testi'
+
+
+    - name: write bgp neigbor info
+      shell: cat "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt" | sed "s/'/\"/g" | jq '.[]|.["bgp-information"]|.[]|.["bgp-peer"]|.[]|.["peer-address"]|.[]|.data'
+      register: infobgp
+      tags: compare
+#    - name: debug that
+#      debug: msg="{{infobgp.stdout_lines}}"
+#      tags: compare
+
+    - name: write results on separate files
+      lineinfile:
+        path: "{{ playbook_dir }}/{{ inventory_hostname }}_info.txt"
+        state: present
+        line: "{{infobgp['stdout_lines']}}"
+        create: yes
+      tags: 'compare'
+
+
+#    - name: read conf files for comparing
+#      debug: msg="{{lookup('file','conf/{{inventory_hostname}}.conf')}}"
+#      register: original
+
+#    - name: write original files to same format
+#      lineinfile:
+#        path: "{{ playbook_dir }}/compare/{{ inventory_hostname }}_original.txt"
+#        state: present
+#        line: "{{original.msg}}"
+#        create: yes
+      
