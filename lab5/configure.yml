@@ -8,6 +8,25 @@
     - name: Build configuration
       include: createconfigs.yml
       delegate_to: localhost
+
+
+    - name: old configurations
+      junos_command:
+        commands: show configuration
+        display: json
+      register: old_conf
+  
+
+
+
+    - name: save old
+      copy:
+        dest: "{{ playbook_dir }}/{{ inventory_hostname }}_old.txt"
+        
+        content : "{{old_conf['stdout_lines'] | to_nice_json}}"
+        
+
+
     - name: Deploy config to device
       junos_config:
         update: override
@@ -15,19 +34,25 @@
       
         
  
-    - name: gather facts
-      junos_facts: 
-        config_format: text
-        gather_subset: config
-      register: result
+    - name: new configs
+      junos_command: 
+        commands: show configuration
+        display: json
+      register: new_conf
 
     
-
-
+    - name: save new configs
+      copy:
+        dest: "{{ playbook_dir }}/{{ inventory_hostname }}_new.txt"
+        
+        content : "{{new_conf['stdout_lines'] | to_nice_json}}"
+        
+     
 
     - name: check bgp neighbors
       junos_command: 
-        commands: show bgp summary | display json
+        commands: show bgp summary
+        display: json
       register: bgp
       tags: 'testi'
 #    - name: debug that
