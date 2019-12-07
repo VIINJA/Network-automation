@@ -1,0 +1,11 @@
+
+- name: include needed files
+  include_vars:
+    dir: "{{ playbook_dir }}/host_vars"
+    extensions:
+      - yml
+      - yaml
+
+- name: Build configuration
+  template: src=template.j2 dest={{ inventory_hostname }}.conf
+

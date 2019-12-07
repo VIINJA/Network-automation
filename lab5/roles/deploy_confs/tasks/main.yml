@@ -1,0 +1,4 @@
+- name: Deploy config to device
+  junos_config:
+    update: override
+    src: "conf/{{ inventory_hostname }}.conf"

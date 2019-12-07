@@ -1,0 +1,11 @@
+- name: new configs
+  junos_command:
+    commands: show configuration
+    display: json
+  register: new_conf
+
+- name: save new configs
+  copy:
+    dest: "{{ playbook_dir }}/{{ inventory_hostname }}_new.txt"
+
+    content : "{{new_conf['stdout_lines'] | to_nice_json}}"

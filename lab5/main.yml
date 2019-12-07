@@ -1,0 +1,13 @@
+# This task gets all Junos configuration from all devices
+- name: Generate and Deploy Configuration
+  hosts: vqfx10k
+  connection: local
+  gather_facts: no
+  
+  roles:
+    - build_confs
+    - old_confs
+    - deploy_confs
+    - new_confs
+    - compare_confs
+    - bgp_neighbours
