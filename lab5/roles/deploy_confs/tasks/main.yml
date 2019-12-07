@@ -2,3 +2,17 @@
   junos_config:
     update: override
     src: "{{ playbook_dir }}/{{ inventory_hostname }}.conf"
+  when: template_exists is undefined
+
+- name: test config
+  junos_config:
+    src: "{{ playbook_dir }}/{{ inventory_hostname }}_test.conf"
+    comment: should we update
+  when: template_exists is defined
+
+- name: Check correctness of commit configuration
+  junos_command:
+    commands: show system rollback 0 | display json
+  register: difference
+  when: template_exists is defined
+
