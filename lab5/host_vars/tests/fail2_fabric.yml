@@ -1,0 +1,16 @@
+asn:
+    vqfx1:
+        local: 60001
+    vqfx2:
+        local: 60002		
+links:
+  - {left: vqfx1, left_as: '60001',
+     right: vqfx2, right_as: '60002',
+  - {left: vqfx1, left_as: '60001',
+     right: vqfx2, right_as: '60002',
+  - {left: vqfx1, left_as: '60001',
+     right: vqfx2, right_as: '60002',
+  - {left: vqfx1, left_as: '60001',
+     right: vqfx2, right_as: '60002',
+  - {left: vqfx1, left_as: '60001',
+     right: vqfx2, right_as: '60002',

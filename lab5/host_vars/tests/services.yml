@@ -1,0 +1,13 @@
+service:
+  vqfx1:
+    snmp:
+      community:
+        name: test
+        mode: public
+        cliaddr: 192.168.0.0/24
+  vqfx2:
+    snmp:
+      community:
+        name: test2
+        mode: private
+        cliaddr: 192.168.0.0/24

@@ -1,0 +1,9 @@
+asn:
+    vqfx1:
+        local: 60001
+    vqfx2:
+        local: 60002		
+links:
+  - {left: vqfx1, left_as: '60001',
+     typo: vqfx2, right_as: '60002',
+     network: 10.10.3.0/30}

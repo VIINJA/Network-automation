@@ -1,0 +1,21 @@
+asn:
+    vqfx1:
+        local: 60001
+    vqfx3:
+        local: 60002		
+links:
+  - {left: vqfx1, left_as: '60001',
+     right: vqfx2, right_as: '60002',
+     network: 10.10.3.0/30}
+  - {left: vqfx1, left_as: '60001',
+     right: vqfx2, right_as: '60002',
+     network: 10.10.4.0/30}	 
+  - {left: vqfx1, left_as: '60001',
+     right: vqfx2, right_as: '60002',
+     network: 10.10.5.0/30}
+  - {left: vqfx1, left_as: '60001',
+     right: vqfx2, right_as: '60002',
+     network: 10.10.6.0/30}	 
+  - {left: vqfx1, left_as: '60001',
+     right: vqfx2, right_as: '60002',
+     network: 10.10.7.0/30}	 
