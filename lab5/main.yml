@@ -5,6 +5,7 @@
 
   roles:
     - test_build_confs
+    - build_confs
   tags: never, test
   
 - name: real thing
