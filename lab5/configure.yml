@@ -65,11 +65,9 @@
       
 
     - name: write results on separate files
-      lineinfile:
-        path: "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt"
-        state: present
-        line: "{{bgp['stdout_lines']}}"
-        create: yes
+      copy:
+        dest: "{{ playbook_dir }}/{{ inventory_hostname }}_bgp.txt"
+        content: "{{bgp['stdout_lines'] | to_nice_json}}"
       tags: 'testi'
 
 
@@ -82,11 +80,9 @@
 #      tags: compare
 
     - name: write results on separate files
-      lineinfile:
-        path: "{{ playbook_dir }}/{{ inventory_hostname }}_info.txt"
-        state: present
-        line: "{{infobgp['stdout_lines']}}"
-        create: yes
+      copy:
+        dest: "{{ playbook_dir }}/{{ inventory_hostname }}_info.txt"
+        content: "{{infobgp['stdout_lines']}}"
       tags: 'compare'
 
 
@@ -101,3 +97,20 @@
 #        line: "{{original.msg}}"
 #        create: yes
       
+    - name: compare old and new files
+      shell: diff "{{ playbook_dir }}/{{inventory_hostname}}_old.txt" "{{ playbook_dir }}/{{inventory_hostname }}_new.txt"
+      failed_when: "tulos.rc > 1"
+      register: tulos
+
+
+
+    - name: write comapring results on separate files
+      copy:
+        dest: "{{ playbook_dir }}/{{ inventory_hostname }}_comparing_results.txt"
+        content: "{{tulos}}"
+      tags: 'compare'
+
+
+
+    - name: print diff
+      debug: msg="{{tulos['stdout_lines']}}"
