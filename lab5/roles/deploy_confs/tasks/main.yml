@@ -6,13 +6,31 @@
 
 - name: test config
   junos_config:
+    update: override
     src: "{{ playbook_dir }}/{{ inventory_hostname }}_test.conf"
-    comment: should we update
+    check_commit: yes
   when: template_exists is defined
 
-- name: Check correctness of commit configuration
+#- name: Check correctness of commit configuration
+#  junos_config:
+#    check_commit: yes 
+#  when: template_exists is defined
+
+
+- name: compare commit to previous
   junos_command:
     commands: show system rollback 0 | display json
   register: difference
+  when: template_exists is defined
+
+- name: show difference
+  debug: msg= "What would change is {{ difference }}"
+  when: template_exists is defined
+
+- name: saving difference
+  
+  copy:
+    dest: "{{ playbook_dir }}/{{ inventory_hostname }}_compare_commit.txt"
+    content: "{{difference['stdout_lines'] }}"
   when: template_exists is defined
 
